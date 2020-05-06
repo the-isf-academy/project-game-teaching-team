@@ -14,8 +14,8 @@ from quest.modal import DialogueModal
 from quest.helpers import resolve_resource_path
 import random
 
-PROB_NOTIF = .001
-NOTIF_TYPES = ["START"]
+BEGIN_PROB_NOTIF = .001
+NOTIF_TYPES = ["FACEBOOK"]
 
 class PhoneGame(InventoryMixin, IslandAdventure):
     """This game allows the player to play through the life of a character.
@@ -24,7 +24,7 @@ class PhoneGame(InventoryMixin, IslandAdventure):
             super().__init__()
             self.dialogue = Dialogue.from_ink("phone.ink")
             self.modal = DialogueModal(self, self.dialogue)
-            self.prob_notif = PROB_NOTIF
+            self.prob_notif = BEGIN_PROB_NOTIF
             self.notif_types = NOTIF_TYPES
 
     def setup_npcs(self):
@@ -49,6 +49,14 @@ class PhoneGame(InventoryMixin, IslandAdventure):
                     self.dialogue.run(start_at=notif_type)
                     self.open_modal(self.modal)
         super().on_update(delta_time)
+
+    def close_modal(self):
+        super().close_modal()
+        if len(self.dialogue.knots_visited) < 2:
+            self.prob_notif -= 0.0001
+        else:
+            self.prob_notif += len(self.dialogue.knots_visited)*0.0001
+
 
 class Phone(InventoryItemMixin, NPC):
     description = "phone"
