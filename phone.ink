@@ -5,7 +5,7 @@ Welcome to your new phone! I'll see you soon :)
 
 
 === FACEBOOK ===
-One of your friends just commented on a post you are following.
+Facebook: One of your friends just commented on a post you are following.
 
 + Click notification -> POST
 + Ignore -> END
