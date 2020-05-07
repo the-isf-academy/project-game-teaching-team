@@ -20,8 +20,8 @@ import random
 import datetime
 
 BEGIN_PROB_NOTIF = .001
-NOTIF_TYPES = ["FACEBOOK"]
-GAME_LENGTH = 120
+NOTIF_TYPES = ["FACEBOOK", "MESSENGER", "COSTAR", "COSTARONE", "COSTARTWO"]
+GAME_LENGTH = 2
 
             
 
@@ -86,14 +86,14 @@ class PhoneGame(InventoryMixin, IslandAdventure):
         https://arcade.academy/examples/instruction_and_game_over_screens.html
         """
         output = "Game Over"
-        arcade.draw_text(output, self.screen_width/2, self.screen_height/1.5,
+        arcade.draw_text(output, self.view_left + self.screen_width/2, self.view_bottom + self.screen_height/1.5,
             arcade.color.WHITE, 54, align="center", anchor_x="center", anchor_y="center")
 
         output = "You recieved {} notifications.".format(self.total_notifs)
-        arcade.draw_text(output, self.screen_width/2, self.screen_height/2.5,
+        arcade.draw_text(output, self.view_left + self.screen_width/2, self.view_bottom + self.screen_height/2.5,
             arcade.color.WHITE, 24, align="center", anchor_x="center", anchor_y="center")
         output = "You responded to {} of them.".format(self.notifs_interacted)
-        arcade.draw_text(output, self.screen_width/2, self.screen_height/2.9,
+        arcade.draw_text(output, self.view_left + self.screen_width/2, self.view_bottom + self.screen_height/2.9,
             arcade.color.WHITE, 24, align="center", anchor_x="center", anchor_y="center")
 
     def on_draw(self):
@@ -104,10 +104,10 @@ class PhoneGame(InventoryMixin, IslandAdventure):
     def close_modal(self):
         super().close_modal()
         if len(self.dialogue.knots_visited) < 2:
-            self.prob_notif -= 0.0001
+            self.prob_notif -= 0.001
         else:
             self.notifs_interacted += 1
-            self.prob_notif += len(self.dialogue.knots_visited)*0.0001
+            self.prob_notif += len(self.dialogue.knots_visited)*0.001
 
     def message(self):
         """ Displays the time in the game relative to the time cycle
