@@ -26,7 +26,8 @@ GAME_LENGTH = 300
             
 
 class PhoneGame(InventoryMixin, IslandAdventure):
-    """This game allows the player to play through the life of a character.
+    """This game allows the player to play through a day in the life of a character 
+    and the interactions they have with their phone during that time.
     """
     screen_width = 600
     screen_height = 600
@@ -45,7 +46,7 @@ class PhoneGame(InventoryMixin, IslandAdventure):
             self.game_over = False
 
     def setup_npcs(self):
-            """Creates and places Grandma and the vegetables.
+            """Creates and places the NPC sprites in the game..
             """
             super().setup_npcs()
             npc_data = [
