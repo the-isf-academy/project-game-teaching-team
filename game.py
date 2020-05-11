@@ -6,7 +6,7 @@
 # You can (and should) create other files and modules to import them
 # here as needed.
 
-from quest.examples.island_time import IslandAdventure
+from quest.examples.island import IslandAdventure
 from quest.contrib.inventory import InventoryMixin, InventoryItemMixin
 from quest.contrib.timer import TimerMixin
 from quest.sprite import NPC
@@ -60,9 +60,8 @@ class PhoneGame(InventoryMixin, IslandAdventure):
                 self.phone = sprite
 
     def setup_physics_engine(self):
-        """Passes optional `time` parameter to the standard :py:class:`ContinuousPhysicsEngine`.
-        The result is that the sprites in the game change their appearance as time progresses in
-        the game.
+        """Sets up a physics engine for the game that includes a timer
+        to track the amount of time the game has been running for.
         """
         self.physics_engine = TimedContinuousPhysicsEngine(self)
 
@@ -81,7 +80,8 @@ class PhoneGame(InventoryMixin, IslandAdventure):
 
     def draw_game_over(self):
         """
-        Draw "Game over" across the screen.
+        Draw "Game over" across the screen and reports the notification statistics
+        to the player at the end of the game.
 
         Code from Python Arcade library documentation:
         https://arcade.academy/examples/instruction_and_game_over_screens.html
