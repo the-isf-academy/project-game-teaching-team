@@ -9,7 +9,8 @@
 from quest.examples.island import IslandAdventure
 from quest.contrib.inventory import InventoryMixin, InventoryItemMixin
 from quest.contrib.timer import TimerMixin
-from quest.sprite import NPC
+from quest.sprite import NPC, Background, Wall
+from quest.map import TiledMap
 from quest.dialogue import Dialogue
 from quest.modal import DialogueModal
 from quest.engines import ContinuousPhysicsEngine
@@ -23,10 +24,10 @@ BEGIN_PROB_NOTIF = .001
 NOTIF_TYPES = ["FACEBOOK", "MESSENGER", "COSTAR", "COSTARONE", "COSTARTWO"]
 GAME_LENGTH = 300
 
-            
+
 
 class PhoneGame(InventoryMixin, IslandAdventure):
-    """This game allows the player to play through a day in the life of a character 
+    """This game allows the player to play through a day in the life of a character
     and the interactions they have with their phone during that time.
     """
     screen_width = 600
@@ -34,7 +35,7 @@ class PhoneGame(InventoryMixin, IslandAdventure):
     max_darkness = 100
     time_cycle_secs = 60
     display_time = True
-    
+
     def __init__(self):
             super().__init__()
             self.dialogue = Dialogue.from_ink("phone.ink")
@@ -45,19 +46,33 @@ class PhoneGame(InventoryMixin, IslandAdventure):
             self.notifs_interacted = 0
             self.game_over = False
 
+    def setup_maps(self):
+        """Sets up the map.
+
+        Uses a :py:class:`TiledMap` to load the map from a ``.tmx`` file,
+        created using :doc:`Tiled <tiled:manual/introduction>`.
+        """
+        self.maps = []
+        sprite_classes = {
+            "Obstacles": Wall,
+            "Background": Background,
+        }
+        island_map = TiledMap("images/island/island_tree.tmx", sprite_classes)
+        self.add_map(island_map)
+
     def setup_npcs(self):
-            """Creates and places the NPC sprites in the game..
-            """
-            super().setup_npcs()
-            npc_data = [
-                [Phone, "images/phone.png", .05, 400, 400],
-            ]
-            for sprite_class, image, scale, x, y in npc_data:
-                sprite = sprite_class(image, scale)
-                sprite.center_x = x
-                sprite.center_y = y
-                self.npc_list.append(sprite)
-                self.phone = sprite
+        """Creates and places the NPC sprites in the game..
+        """
+        super().setup_npcs()
+        npc_data = [
+        [Phone, "images/phone.png", .05, 400, 400],
+        ]
+        for sprite_class, image, scale, x, y in npc_data:
+            sprite = sprite_class(image, scale)
+            sprite.center_x = x
+            sprite.center_y = y
+            self.npc_list.append(sprite)
+            self.phone = sprite
 
     def setup_physics_engine(self):
         """Sets up a physics engine for the game that includes a timer
@@ -115,8 +130,8 @@ class PhoneGame(InventoryMixin, IslandAdventure):
         """
         if self.display_time:
             time = str(datetime.timedelta(seconds = (GAME_LENGTH - self.physics_engine.time_since_start())))
-            return time.split(".")[0] 
-        
+            return time.split(".")[0]
+
 class TimedContinuousPhysicsEngine(ContinuousPhysicsEngine, TimerMixin):
     """ Physics engine that also makes time-based updates
     """
@@ -129,7 +144,7 @@ class TimedContinuousPhysicsEngine(ContinuousPhysicsEngine, TimerMixin):
         of the current day/night cycle.
         """
         super().update()
-        time_since_start = self.time_since_start() 
+        time_since_start = self.time_since_start()
         curr_mod = time_since_start%self.game.time_cycle_secs
         grade = abs(curr_mod - self.game.time_cycle_secs/2) / (self.game.time_cycle_secs/2)
         color_value = grade*(255-self.game.max_darkness) + self.game.max_darkness
